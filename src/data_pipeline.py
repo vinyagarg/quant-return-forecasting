@@ -14,11 +14,13 @@ def download_data(start="2018-01-01", end="2026-01-01", out_dir="data/raw"):
     for ticker in TICKERS:
         print(f"Downloading {ticker}...")
         df = yf.download(ticker, start=start, end=end)
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
         if not df.empty:
             df.to_csv(f"{out_dir}/{ticker}.csv")
             print(f"  Saved {ticker}: {len(df)} rows")
         else:
             print(f"  WARNING: no data for {ticker}")
-
+      
 if __name__ == "__main__":
     download_data()
